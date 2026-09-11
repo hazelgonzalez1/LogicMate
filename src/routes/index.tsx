@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav, SiteFooter } from "@/components/site-nav";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -44,10 +47,107 @@ const features = [
   },
 ];
 
+function BienvenidaConProgreso() {
+  const { user } = useAuth();
+  const [unidades, setUnidades] = useState
+    { id: number; nombre: string; orden: number; total: number; resueltos: number }[]
+  >([]);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function cargar() {
+      const { data: unidadesData } = await supabase
+        .from("unidades")
+        .select("id, nombre, orden, temas(id, ejercicios(id))")
+        .order("orden", { ascending: true });
+
+      const { data: progresoData } = await supabase
+        .from("progreso")
+        .select("ejercicio_id")
+        .eq("user_id", user!.id)
+        .eq("es_correcta", true);
+
+      const correctosIds = new Set((progresoData ?? []).map((p) => p.ejercicio_id));
+
+      const resultado = (unidadesData ?? []).map((u: any) => {
+        const ejerciciosIds = (u.temas ?? []).flatMap((t: any) =>
+          (t.ejercicios ?? []).map((e: any) => e.id)
+        );
+        return {
+          id: u.id,
+          nombre: u.nombre,
+          orden: u.orden,
+          total: ejerciciosIds.length,
+          resueltos: ejerciciosIds.filter((id: number) => correctosIds.has(id)).length,
+        };
+      });
+
+      setUnidades(resultado);
+      setCargando(false);
+    }
+    cargar();
+  }, [user]);
+
+  if (!user) return null;
+
+  const nombre = (user.user_metadata as any)?.full_name || user.email?.split("@")[0] || "";
+
+  const siguienteUnidad =
+    unidades.find((u) => u.total > 0 && u.resueltos < u.total) ?? unidades[0];
+
+  const totalGeneral = unidades.reduce((acc, u) => acc + u.total, 0);
+  const resueltosGeneral = unidades.reduce((acc, u) => acc + u.resueltos, 0);
+  const porcentaje =
+    totalGeneral === 0 ? 0 : Math.round((resueltosGeneral / totalGeneral) * 100);
+
+  return (
+    <section className="card-soft mt-8 p-6">
+      <h2 className="text-2xl font-bold">
+        Bienvenido, <span className="text-primary">{nombre}</span>
+      </h2>
+
+      {cargando && <p className="mt-3 text-muted-foreground">Cargando tu progreso...</p>}
+
+      {!cargando && totalGeneral > 0 && (
+        <>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Llevas {resueltosGeneral} de {totalGeneral} ejercicios ({porcentaje}%)
+          </p>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: `${porcentaje}%` }}
+            />
+          </div>
+        </>
+      )}
+
+      {!cargando && siguienteUnidad && (
+        <Link
+          to="/unidades/$unidadId"
+          params={{ unidadId: String(siguienteUnidad.id) }}
+          className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5"
+        >
+          Continúa con tu clase: {siguienteUnidad.nombre}
+        </Link>
+      )}
+
+      {!cargando && !siguienteUnidad && (
+        <p className="mt-4 text-sm text-muted-foreground">
+          Todavía no hay unidades disponibles.
+        </p>
+      )}
+    </section>
+  );
+}
+
 function Index() {
   return (
     <div className="min-h-screen">
       <SiteNav />
+      <BienvenidaConProgreso />
       <main className="mx-auto max-w-6xl px-5">
         <section className="grid items-center gap-10 py-16 md:grid-cols-2 md:py-24">
           <div>
