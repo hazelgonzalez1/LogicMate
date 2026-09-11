@@ -16,6 +16,9 @@ import { Route as ForoRouteImport } from './routes/foro'
 import { Route as JuegosRouteImport } from './routes/juegos'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as RankingRouteImport } from './routes/ranking'
+import { Route as UnidadesIndexRouteImport } from './routes/unidades/index'
+import { Route as UnidadesUnidadIndexRouteImport } from './routes/unidades/unidad.index'
+import { Route as UnidadesUnidadTemaRouteImport } from './routes/unidades/unidad.tema'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +55,21 @@ const RankingRoute = RankingRouteImport.update({
   path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnidadesIndexRoute = UnidadesIndexRouteImport.update({
+  id: '/unidades/',
+  path: '/unidades/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnidadesUnidadIndexRoute = UnidadesUnidadIndexRouteImport.update({
+  id: '/unidades/unidad/',
+  path: '/unidades/unidad/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnidadesUnidadTemaRoute = UnidadesUnidadTemaRouteImport.update({
+  id: '/unidades/unidad/tema',
+  path: '/unidades/unidad/tema',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +79,9 @@ export interface FileRoutesByFullPath {
   '/juegos': typeof JuegosRoute
   '/perfil': typeof PerfilRoute
   '/ranking': typeof RankingRoute
+  '/unidades/': typeof UnidadesIndexRoute
+  '/unidades/unidad/tema': typeof UnidadesUnidadTemaRoute
+  '/unidades/unidad/': typeof UnidadesUnidadIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +91,9 @@ export interface FileRoutesByTo {
   '/juegos': typeof JuegosRoute
   '/perfil': typeof PerfilRoute
   '/ranking': typeof RankingRoute
+  '/unidades': typeof UnidadesIndexRoute
+  '/unidades/unidad/tema': typeof UnidadesUnidadTemaRoute
+  '/unidades/unidad': typeof UnidadesUnidadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,14 +104,35 @@ export interface FileRoutesById {
   '/juegos': typeof JuegosRoute
   '/perfil': typeof PerfilRoute
   '/ranking': typeof RankingRoute
+  '/unidades/': typeof UnidadesIndexRoute
+  '/unidades/unidad/tema': typeof UnidadesUnidadTemaRoute
+  '/unidades/unidad/': typeof UnidadesUnidadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/ejercicios' | '/foro' | '/juegos' | '/perfil' | '/ranking'
+    | '/'
+    | '/auth'
+    | '/ejercicios'
+    | '/foro'
+    | '/juegos'
+    | '/perfil'
+    | '/ranking'
+    | '/unidades/'
+    | '/unidades/unidad/tema'
+    | '/unidades/unidad/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/auth' | '/ejercicios' | '/foro' | '/juegos' | '/perfil' | '/ranking'
+    | '/'
+    | '/auth'
+    | '/ejercicios'
+    | '/foro'
+    | '/juegos'
+    | '/perfil'
+    | '/ranking'
+    | '/unidades'
+    | '/unidades/unidad/tema'
+    | '/unidades/unidad'
   id:
     | '__root__'
     | '/'
@@ -97,6 +142,9 @@ export interface FileRouteTypes {
     | '/juegos'
     | '/perfil'
     | '/ranking'
+    | '/unidades/'
+    | '/unidades/unidad/tema'
+    | '/unidades/unidad/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -107,6 +155,9 @@ export interface RootRouteChildren {
   JuegosRoute: typeof JuegosRoute
   PerfilRoute: typeof PerfilRoute
   RankingRoute: typeof RankingRoute
+  UnidadesIndexRoute: typeof UnidadesIndexRoute
+  UnidadesUnidadTemaRoute: typeof UnidadesUnidadTemaRoute
+  UnidadesUnidadIndexRoute: typeof UnidadesUnidadIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -160,6 +211,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/unidades/': {
+      id: '/unidades/'
+      path: '/unidades'
+      fullPath: '/unidades/'
+      preLoaderRoute: typeof UnidadesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unidades/unidad/': {
+      id: '/unidades/unidad/'
+      path: '/unidades/unidad'
+      fullPath: '/unidades/unidad/'
+      preLoaderRoute: typeof UnidadesUnidadIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unidades/unidad/tema': {
+      id: '/unidades/unidad/tema'
+      path: '/unidades/unidad/tema'
+      fullPath: '/unidades/unidad/tema'
+      preLoaderRoute: typeof UnidadesUnidadTemaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -171,6 +243,9 @@ const rootRouteChildren: RootRouteChildren = {
   JuegosRoute: JuegosRoute,
   PerfilRoute: PerfilRoute,
   RankingRoute: RankingRoute,
+  UnidadesIndexRoute: UnidadesIndexRoute,
+  UnidadesUnidadTemaRoute: UnidadesUnidadTemaRoute,
+  UnidadesUnidadIndexRoute: UnidadesUnidadIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

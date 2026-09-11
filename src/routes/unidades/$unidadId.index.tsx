@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteNav, SiteFooter } from "@/components/site-nav";
 
-export const Route = createFileRoute("/unidades/$unidadId/")({
+export const Route = createFileRoute("/unidades/unidad/")({
   component: TemasPage,
 });
 
