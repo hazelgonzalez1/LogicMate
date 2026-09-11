@@ -36,7 +36,8 @@ const lecciones = [
     titulo: "Suma y resta con distinto denominador",
     duracion: "7 min",
     nivel: "Básico",
-    descripcion: "Encuentra el mínimo común múltiplo, convierte las fracciones y opera con seguridad.",
+    descripcion:
+      "Encuentra el mínimo común múltiplo, convierte las fracciones y opera con seguridad.",
     video: "https://www.youtube.com/embed/5juto2ze8Lg",
     practica: "Calcula: 2/3 + 1/4",
   },
@@ -55,7 +56,8 @@ const lecciones = [
     titulo: "Áreas de figuras planas",
     duracion: "9 min",
     nivel: "Básico",
-    descripcion: "Repasa las fórmulas de área de triángulos, rectángulos, círculos y trapecios con ejemplos.",
+    descripcion:
+      "Repasa las fórmulas de área de triángulos, rectángulos, círculos y trapecios con ejemplos.",
     video: "https://www.youtube.com/embed/xCdxURXMdFY",
     practica: "Área de un círculo de radio 5",
   },
@@ -84,7 +86,10 @@ function pintarFiltros() {
 }
 
 function pintarLecciones() {
-  const visibles = temaActivo === "Todos" ? lecciones : lecciones.filter((l) => l.tema === temaActivo);
+  const visibles =
+    temaActivo === "Todos"
+      ? lecciones
+      : lecciones.filter((l) => l.tema === temaActivo);
   contenedor.innerHTML = visibles
     .map(
       (l) => `
